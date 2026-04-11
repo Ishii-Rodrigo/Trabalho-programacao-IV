@@ -144,11 +144,11 @@
                     Padding="24">
 
                 <StackPanel>
-                    <TextBlock Text="Dados do pagamento"
+                    <TextBlock Text="DADOS DO PAGAMENTO"
                                FontSize="24"
                                FontWeight="Bold"
                                Foreground="#111827"/>
-                    <TextBlock Text="Preencha os campos abaixo para concluir o recebimento."
+                    <TextBlock Text=" "
                                FontSize="13"
                                Foreground="#6B7280"
                                Margin="0,4,0,20"
@@ -175,6 +175,7 @@
                              FontSize="16"
                              Margin="0,6,0,14"
                              Padding="10"
+                             MaxLength="16"
                              BorderBrush="#D1D5DB"
                              BorderThickness="1"
                              Background="#F9FAFB"/>
@@ -192,7 +193,7 @@
                              BorderThickness="1"
                              Background="#F9FAFB"/>
 
-                    <TextBlock Text="Data de Validade (MM/yyyy)"
+                    <TextBlock Text="Data de Validade (MM/AAAA)"
                                FontSize="16"
                                FontWeight="SemiBold"
                                Foreground="#374151"/>
@@ -216,7 +217,7 @@
                              BorderThickness="1"
                              Background="#F9FAFB"/>
 
-                    <Button Content="Receber"
+                    <Button Content="RECEBER"
                             Height="48"
                             FontSize="18"
                             FontWeight="Bold"

@@ -16,25 +16,39 @@ namespace umfg.venda.app.Commands
 
             if (viewModel == null)
             {
-                MessageBox.Show("Erro interno ao processar pagamento.");
+                MessageBox.Show("Erro interno ao processar pagamento.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            List<string> erros = new();
+            List<string> erros = new List<string>();
 
             if (viewModel.TipoCartaoSelecionado <= 0)
                 erros.Add("- Selecione o tipo de cartão.");
 
+            viewModel.NomeCartao = viewModel.NomeCartao?.ToUpper().Trim();
+
             if (string.IsNullOrWhiteSpace(viewModel.NomeCartao))
+            {
                 erros.Add("- Nome no cartão é obrigatório.");
+            }
+            else if (!Regex.IsMatch(viewModel.NomeCartao, @"^[A-ZÀ-Ÿ]{2,}(?:\s[A-ZÀ-Ÿ]{2,})+$"))
+            {
+                erros.Add("- Informe o nome completo (apenas letras, mínimo de duas palavras).");
+            }
 
             if (string.IsNullOrWhiteSpace(viewModel.NumeroCartao))
+            {
                 erros.Add("- Número do cartão é obrigatório.");
+            }
             else if (!ValidarCartaoLuhn(viewModel.NumeroCartao))
+            {
                 erros.Add("- Número do cartão inválido.");
+            }
 
-            if (!Regex.IsMatch(viewModel.CVV ?? "", @"^\d{3}$"))
-                erros.Add("- CVV deve conter exatamente 3 dígitos.");
+            if (string.IsNullOrWhiteSpace(viewModel.CVV) || !Regex.IsMatch(viewModel.CVV, @"^\d{3}$"))
+            {
+                erros.Add("- CVV deve conter exatamente 3 dígitos numéricos.");
+            }
 
             var dataValidade = viewModel.ObterDataValidade();
 
@@ -44,13 +58,13 @@ namespace umfg.venda.app.Commands
             }
             else
             {
-                var ultimoDia = new DateTime(
+                var ultimoDiaCartao = new DateTime(
                     dataValidade.Value.Year,
                     dataValidade.Value.Month,
                     DateTime.DaysInMonth(dataValidade.Value.Year, dataValidade.Value.Month)
                 );
 
-                if (ultimoDia < DateTime.Now)
+                if (ultimoDiaCartao < DateTime.Today)
                     erros.Add("- Cartão vencido.");
             }
 
@@ -58,10 +72,9 @@ namespace umfg.venda.app.Commands
             {
                 MessageBox.Show(
                     "Pagamento recusado:\n\n" + string.Join("\n", erros),
-                    "Erro",
+                    "Erro de Validação",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
-
                 return;
             }
 
